@@ -1,51 +1,70 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Huffman;
-
-
-//AddLeafs working fine
-//Min() and Min2() are working fine
-//CreateUpperNodes still being verified
 public class Program
 {
     public static List<Node> tree = new List<Node>();
     public static Dictionary<char,string> newSymbols = new Dictionary<char,string>();
-    public static string text = "aaaaaaaaaaaaaaafffffffffffgggggllllll";
+    public static string text;
     public static int father = 0;
     public static void Main()
     {
-        AddLeafs();
-        foreach (var node in tree)
+        int Choice = 0;
+
+        while (Choice != 3)
         {
-            Console.WriteLine(node.frequency + " " + node.character+" "+ node.summed+" "+ node.visited);
-        }
+          UserInterface.ShowIntroduction();
+          UserInterface.ShowMenu();
+          Choice = Convert.ToInt16(Console.ReadLine());
 
-        Console.WriteLine("------------");
+          switch (Choice) 
+          {
+            case 1:
+            string? filename = Console.ReadLine();
+            StreamReader file = new StreamReader(filename);
+            text = file.ReadToEnd();
+            AddLeafs();
+            foreach (var node in tree)
+            {
+                Console.WriteLine(node.frequency + " " + node.character + " " + node.summed + " " + node.visited);
+            }
 
-        int min = Min();
-        int min2 = Min2(min);
-        Console.WriteLine("MIN = "+min+ " MIN2 = "+min2);
-        
-        Console.WriteLine("------------");
-
-        CreateUpperNodes();
-
-        foreach (var node in tree)
-        {
-            if(node != null && node.right != null && node.left != null)
-            Console.WriteLine("Node: "+" "+node.frequency+" Left: "+node.left.frequency+" "+" Right: "+node.right.frequency);
-        }
+            Console.WriteLine("------------");
 
 
-        Node root = tree[father];
-        string code = "";
-        CreateCode(root,code);  //will put each character and its corresponding
-        foreach (var dicItem in newSymbols)
-        {
-            Console.WriteLine(dicItem.Key +" "+dicItem.Value);
+            CreateUpperNodes();
+
+            foreach (var node in tree)
+            {
+                if (node != null && node.right != null && node.left != null)
+                    Console.WriteLine("Node: " + " " + node.frequency + " Left: " + node.left.frequency + " " + " Right: " + node.right.frequency);
+            }
+
+
+            Node root = tree[father];
+            string code = "";
+            CreateCode(root, code);  //will put each character and its corresponding
+            foreach (var dicItem in newSymbols)
+            {
+                Console.WriteLine(dicItem.Key + " " + dicItem.Value);
+            }
+            break;
+
+            case 2:
+
+            break;
+            
+            case 3:
+                    Console.WriteLine("Thanks for using my application...");
+            break;
+
+            default:
+                    Console.WriteLine("Please enter an valid option");
+            break;
+          }
         }
     }
 
@@ -175,6 +194,7 @@ public class Program
         {
             if (father.character != '$')
             {
+                if(!newSymbols.ContainsKey(father.character))
                 newSymbols.Add(father.character, code);
             }
             CreateCode(father.right, code + "1");
